@@ -1,0 +1,47 @@
+# ADMIRE L.C. backend — Render.com Blueprint
+# Deploy: Render dashboard → New → Blueprint → repo tanlang.
+# Yoki: https://dashboard.render.com/select-repo?type=blueprint
+#
+# Bu server: Express CMS (/admin) + API (/api) + Telegram bot (long-polling)
+# + SQLite baza (doimiy diskda saqlanadi).
+
+services:
+  - type: web
+    name: admire-lc-backend
+    runtime: node
+    plan: free            # haqiqiy ishlab chiqarish uchun "starter" tavsiya etiladi
+    rootDir: bot
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/config
+    disk:                 # SQLite fayli shu diskda — redeploy'da yo'qolmaydi
+      name: admire-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: DATABASE_URL
+        value: /var/data/admire.db
+      # Quyidagilarni Render dashboardda qo'lda kiriting (secret!):
+      #   TELEGRAM_BOT_TOKEN      — @BotFather tokeni
+      #   TELEGRAM_BOT_USERNAME   — Admire_qabul_bot
+      #   TELEGRAM_ADMIN_CHAT_ID  — 7793284016
+      #   TELEGRAM_ADMIN_IDS      — 7793284016
+      #   ADMIN_PASSWORD          — kuchli parol (seed admin uchun)
+      #   WEBHOOK_SECRET          — ixtiyoriy uzun satr (webhook rejimi uchun)
+      #   BASE_URL                — https://admire-lc-backend.onrender.com (webhook uchun)
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_BOT_USERNAME
+        sync: false
+      - key: TELEGRAM_ADMIN_CHAT_ID
+        sync: false
+      - key: TELEGRAM_ADMIN_IDS
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: BASE_URL
+        sync: false
+      - key: WEBHOOK_SECRET
+        sync: false

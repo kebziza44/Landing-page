@@ -1,0 +1,7 @@
+# Hech qachon yuklamang / commit qilmang:
+bot/.env
+bot/data/
+node_modules/
+bot/node_modules/
+*.log
+.DS_Store

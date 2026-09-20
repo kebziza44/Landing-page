@@ -1,0 +1,21 @@
+{
+  "name": "admire-lc-admissions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ADMIRE L.C. — Telegram qabul boti, API va admin panel",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "grammy": "^1.30.0",
+    "multer": "^2.0.2",
+    "sql.js": "^1.11.0"
+  }
+}

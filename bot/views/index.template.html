@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{SEO_TITLE}}</title>
+  <meta name="description" content="{{SEO_DESC}}" />
+  <meta name="theme-color" content="#0c1330" />
+
+  <!-- OpenGraph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="{{SEO_TITLE}}" />
+  <meta property="og:description" content="{{SEO_DESC}}" />
+  <meta property="og:image" content="{{SEO_OG_IMAGE}}" />
+  <meta property="og:locale" content="uz_UZ" />
+  <link rel="icon" type="image/png" href="{{SEO_FAVICON}}" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Structured data (verified information only) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "ADMIRE L.C.",
+    "alternateName": "Admire Learning Center",
+    "description": "Ingliz tili, IELTS va CEFR tayyorlov kurslari. Har yakshanba IELTS va CEFR mock imtihonlari.",
+    "telephone": "+998906666677",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Ibrat shaharchasi",
+      "addressRegion": "Farg‘ona viloyati",
+      "addressCountry": "UZ"
+    },
+    "geo": { "@type": "GeoCoordinates", "latitude": 40.5619302, "longitude": 71.1376099 },
+    "sameAs": [
+      "https://t.me/admire_learning_center",
+      "https://www.instagram.com/admire_learning_center/",
+      "https://www.google.com/maps/place/Admire/@40.5619302,71.1376099,17z/data=!4m6!3m5!1s0x38bae3c348b0a535:0x9c9f88a453624e7!8m2!3d40.5619302!4d71.1376099!16s%2Fg%2F11l22p0c34"
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar__wrap">
+      <div class="navbar__inner">
+        <a href="#home" class="brand" aria-label="ADMIRE L.C. — bosh sahifa">
+          <span class="brand__logo-box">
+            <img src="assets/img/logo.png" alt="Admire Learning Center logotipi" class="brand__logo" />
+          </span>
+          <span class="brand__text">ADMIRE <em>L.C.</em></span>
+        </a>
+
+        <nav class="nav" id="nav" aria-label="Asosiy navigatsiya">
+          <a href="#home" class="nav__link">Bosh sahifa</a>
+          <a href="#about" class="nav__link">Biz haqimizda</a>
+          <a href="#courses" class="nav__link">Kurslar</a>
+          <a href="#teachers" class="nav__link">Ustozlar</a>
+          <a href="#results" class="nav__link">Natijalar</a>
+          <a href="#gallery" class="nav__link">Galereya</a>
+          <a href="#reviews" class="nav__link">Sharhlar</a>
+          <a href="#location" class="nav__link">Manzil</a>
+          <a href="#contact" class="nav__link">Aloqa</a>
+          <a href="tel:+998906666677" class="btn btn--primary nav__cta">Bog‘lanish</a>
+        </nav>
+
+        <button class="burger" id="burger" aria-label="Menyuni ochish" aria-expanded="false" aria-controls="nav">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="nav-backdrop" id="navBackdrop" aria-hidden="true"></div>
+
+  <main>
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="home">
+      <picture class="hero__bg"><img src="{{HERO_BG}}" alt="{{HERO_BG_ALT}}" fetchpriority="high" /></picture>
+      <div class="hero__overlay" aria-hidden="true"></div>
+
+      <div class="container hero__content">
+        <p class="hero__eyebrow reveal">{{HERO_BADGE}}</p>
+        <h1 class="hero__title reveal">{{HERO_TITLE_HTML}}</h1>
+        <p class="hero__subtitle reveal">{{HERO_SUBTITLE}}</p>
+        <div class="hero__actions reveal">
+          <a href="{{HERO_CTA1_HREF}}" class="btn btn--primary btn--lg">{{HERO_CTA1_TEXT}}</a>
+          <a href="{{HERO_CTA2_HREF}}" class="btn btn--ghost btn--lg">{{HERO_CTA2_TEXT}}</a>
+        </div>
+
+        <div class="hero__badges reveal">{{HERO_STATS_HTML}}</div>
+
+      <a href="#about" class="hero__scroll" aria-label="Pastga suring">
+        <span class="hero__scroll-dot"></span>
+      </a>
+    </section>
+
+    <!-- ================= ABOUT ================= -->
+    <section class="section about" id="about">
+      <div class="container about__grid">
+        <div class="about__media reveal">
+          <img src="{{ABOUT_IMAGE}}" alt="{{ABOUT_IMAGE_ALT}}" loading="lazy" />
+          <div class="about__media-caption">{{ABOUT_CAPTION}}</div>
+        </div>
+        <div class="about__body">
+          <p class="section__eyebrow reveal">{{ABOUT_EYEBROW}}</p>
+          <h2 class="section__title reveal">{{ABOUT_TITLE}}</h2>
+          <p class="reveal">{{ABOUT_LEAD}}</p>
+          <p class="reveal">{{ABOUT_TEXT}}</p>
+          <ul class="about__list reveal">{{ABOUT_FEATURES_HTML}}</ul>
+          <a href="{{ABOUT_CTA_HREF}}" class="btn btn--secondary reveal">{{ABOUT_CTA_TEXT}}</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= COURSES ================= -->
+    <section class="section courses" id="courses">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow reveal">Kurslar</p>
+          <h2 class="section__title reveal">Sizga mos yo‘nalishni tanlang</h2>
+          <p class="section__lead reveal">{{COURSES_LEAD}}</p>
+        </div>
+
+        <div class="courses__grid">{{COURSES_HTML}}</div>
+      </div>
+    </section>
+
+    <!-- ================= TEACHERS ================= -->
+    <section class="section teachers" id="teachers">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow reveal">Ustozlar</p>
+          <h2 class="section__title reveal">Professional ustozlar jamoasi</h2>
+          <p class="section__lead reveal">Markaz faoliyati haqida ochiq manbalarda e’lon qilingan ustozlar.</p>
+        </div>
+
+        <div class="teachers__featured reveal">{{TEACHERS_FEATURED_HTML}}</div>
+        <div class="teachers__grid">{{TEACHERS_HTML}}</div>
+      </div>
+    </section>
+
+    <!-- ================= RESULTS ================= -->
+    <section class="section results" id="results">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow reveal">Natijalar</p>
+          <h2 class="section__title reveal">O‘quvchilarimizning e’lon qilingan natijalari</h2>
+          <p class="section__lead reveal">Barcha natijalar rasmiy Telegram kanalimizda e’lon qilingan.</p>
+        </div>
+
+        <div class="results__grid">{{RESULTS_HTML}}</div>
+        <p class="results__note reveal">Yangi natijalar har hafta rasmiy kanalda e’lon qilinadi:
+          <a href="https://t.me/admire_learning_center" target="_blank" rel="noopener">t.me/admire_learning_center</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= VIDEO RESULTS (CMS) ================= -->
+    {{VIDEOS_SECTION}}
+
+    <!-- ================= GALLERY ================= -->
+    <section class="section gallery" id="gallery">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow reveal">Galereya</p>
+          <h2 class="section__title reveal">Markaz hayotidan lavhalar</h2>
+          <p class="section__lead reveal">Rasmlar Google Maps’dagi rasmiy “Admire” sahifasidan olingan.</p>
+        </div>
+
+        <div class="gallery__grid" id="galleryGrid">{{GALLERY_HTML}}</div>
+      </div>
+    </section>
+
+    <!-- ================= REVIEWS ================= -->
+    <section class="section reviews" id="reviews">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow reveal">Sharhlar</p>
+          <h2 class="section__title reveal">O‘quvchilar va mehmonlar fikri</h2>
+        </div>
+
+        <div class="reviews__ratings reveal">{{RATING_CARDS_HTML}}</div>
+        <div class="reviews__grid">{{REVIEWS_HTML}}</div>
+        <div class="reviews__actions reveal">
+          <a class="btn btn--secondary" target="_blank" rel="noopener"
+             href="https://www.google.com/maps/place/Admire/@40.5619302,71.1376099,17z/data=!4m6!3m5!1s0x38bae3c348b0a535:0x9c9f88a453624e7!8m2!3d40.5619302!4d71.1376099!16s%2Fg%2F11l22p0c34">
+            Google Maps’da ko‘rish
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LOCATION ================= -->
+    <section class="section location" id="location">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow reveal">Manzil</p>
+          <h2 class="section__title reveal">Bizni toping</h2>
+        </div>
+
+        <div class="location__grid">
+          <div class="location__info reveal">
+            <address>{{LOCATION_ADDRESS_HTML}}</address>
+            <p class="location__coords">{{LOCATION_COORDS_TEXT}}</p>
+            <ul class="location__hours">{{LOCATION_HOURS_HTML}}</ul>
+            <a class="btn btn--primary" target="_blank" rel="noopener" href="{{MAPS_URL}}">
+              Google Maps’da ochish
+            </a>
+          </div>
+          <div class="location__map reveal">
+            <iframe
+              title="ADMIRE L.C. xaritada"
+              src="{{MAP_EMBED_URL}}"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONTACT ================= -->
+    <section class="section contact" id="contact">
+      <div class="container">
+        <div class="section__head">
+          <p class="section__eyebrow reveal">Aloqa</p>
+          <h2 class="section__title reveal">Kurslarga yoziling</h2>
+          <p class="section__lead reveal">Qulay aloqa usulini tanlang yoki quyidagi forma orqali murojaat qoldiring.</p>
+        </div>
+
+        <div class="contact__buttons reveal">
+          <a class="contact-btn" href="{{CONTACT_PHONE_HREF}}">
+            <span class="contact-btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg>
+            </span>
+            <span class="contact-btn__label">Telefon qilish<small>{{CONTACT_PHONE}}</small></span>
+          </a>
+          <a class="contact-btn" href="{{CONTACT_TELEGRAM_HREF}}" target="_blank" rel="noopener">
+            <span class="contact-btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.4 19 19.2c-.2 1-.8 1.2-1.6.8l-4.5-3.3-2.2 2.1c-.2.2-.4.4-.9.4l.3-4.6 8.4-7.6c.4-.3-.1-.5-.6-.2L6.9 13.1 2.5 11.7c-1-.3-1-1 .2-1.4l17.7-6.8c.8-.3 1.5.2 1.5.9Z"/></svg>
+            </span>
+            <span class="contact-btn__label">Telegram<small>t.me/admire_learning_center</small></span>
+          </a>
+          <a class="contact-btn" href="{{CONTACT_INSTAGRAM_HREF}}" target="_blank" rel="noopener">
+            <span class="contact-btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>
+            </span>
+            <span class="contact-btn__label">Instagram<small>@admire_learning_center</small></span>
+          </a>
+          <a class="contact-btn" target="_blank" rel="noopener"
+             href="https://www.google.com/maps/place/Admire/@40.5619302,71.1376099,17z/data=!4m6!3m5!1s0x38bae3c348b0a535:0x9c9f88a453624e7!8m2!3d40.5619302!4d71.1376099!16s%2Fg%2F11l22p0c34">
+            <span class="contact-btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-5.1 7-11a7 7 0 1 0-14 0c0 5.9 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            </span>
+            <span class="contact-btn__label">Google Maps<small>{{CONTACT_MAPS_NOTE}}</small></span>
+          </a>
+        </div>
+
+        <div class="contact__telegram reveal">
+          <a class="btn btn--primary btn--lg" id="telegramApply"
+             href="{{TELEGRAM_APPLY_URL}}" target="_blank" rel="noopener">
+            📝 Telegram orqali qabulga yozilish
+          </a>
+          <p class="contact__telegram-note">{{TELEGRAM_APPLY_NOTE}}</p>
+        </div>
+
+        <form class="contact__form reveal" id="contactForm" novalidate>
+          <div class="form__row">
+            <div class="form__field">
+              <label for="name">Ism</label>
+              <input type="text" id="name" name="name" autocomplete="name" required minlength="2" placeholder="Ismingizni kiriting" />
+              <span class="form__error" data-error-for="name"></span>
+            </div>
+            <div class="form__field">
+              <label for="phone">Telefon raqam</label>
+              <input type="tel" id="phone" name="phone" autocomplete="tel" required placeholder="+998 90 000 00 00" />
+              <span class="form__error" data-error-for="phone"></span>
+            </div>
+          </div>
+          <div class="form__field">
+            <label for="course">Qiziqayotgan kurs</label>
+            <select id="course" name="course" required>
+              <option value="" selected disabled>Tanlang</option>
+              <option>Ingliz tili</option>
+              <option>IELTS</option>
+              <option>CEFR</option>
+              <option>SAT</option>
+              <option>Arab tili</option>
+            </select>
+            <span class="form__error" data-error-for="course"></span>
+          </div>
+          <div class="form__field">
+            <label for="message">Xabar</label>
+            <textarea id="message" name="message" rows="4" placeholder="Savolingiz yoki izohingiz (ixtiyoriy)"></textarea>
+          </div>
+          <button type="submit" class="btn btn--primary btn--lg">Ariza yuborish</button>
+          <p class="form__notice" id="formNotice" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__brand">
+        <a href="#home" class="brand brand--light">
+          <img src="assets/img/logo.png" alt="Admire Learning Center logotipi" class="brand__logo" />
+          <span class="brand__text">ADMIRE <em>L.C.</em></span>
+        </a>
+        <p>{{FOOTER_ABOUT_HTML}}</p>
+      </div>
+
+      <nav class="footer__col" aria-label="Futernavigatsiya">
+        <h4>Navigatsiya</h4>
+        <a href="#about">Biz haqimizda</a>
+        <a href="#courses">Kurslar</a>
+        <a href="#teachers">Ustozlar</a>
+        <a href="#results">Natijalar</a>
+        <a href="#gallery">Galereya</a>
+      </nav>
+
+      <div class="footer__col">
+        <h4>Manzil</h4>
+        <p>{{FOOTER_ADDRESS_HTML}}</p>
+        <p>{{FOOTER_HOURS_TEXT}}</p>
+      </div>
+
+      <div class="footer__col">
+        <h4>Aloqa</h4>
+        <a href="{{CONTACT_PHONE_HREF}}">{{CONTACT_PHONE}}</a>
+        <a href="https://t.me/admire_learning_center" target="_blank" rel="noopener">Telegram</a>
+        <a href="https://www.instagram.com/admire_learning_center/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.google.com/maps/place/Admire/@40.5619302,71.1376099,17z/data=!4m6!3m5!1s0x38bae3c348b0a535:0x9c9f88a453624e7!8m2!3d40.5619302!4d71.1376099!16s%2Fg%2F11l22p0c34" target="_blank" rel="noopener">Google Maps</a>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <p>{{FOOTER_COPYRIGHT}}</p>
+    </div>
+  </footer>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Rasm ko‘rish oynasi" hidden>
+    <button class="lightbox__close" id="lightboxClose" aria-label="Yopish">×</button>
+    <button class="lightbox__nav lightbox__nav--prev" id="lightboxPrev" aria-label="Oldingi rasm">‹</button>
+    <img id="lightboxImg" src="" alt="" />
+    <button class="lightbox__nav lightbox__nav--next" id="lightboxNext" aria-label="Keyingi rasm">›</button>
+    <p class="lightbox__counter" id="lightboxCounter"></p>
+  </div>
+
+  <!-- Video modal (natijalar) -->
+  <div class="vmodal" id="vmodal" role="dialog" aria-modal="true" aria-label="Video ko‘rish" hidden>
+    <button class="vmodal__close" id="vmodalClose" aria-label="Yopish">×</button>
+    <div class="vmodal__box">
+      <div id="vmodalPlayer" class="vmodal__player"></div>
+      <div id="vmodalInfo" class="vmodal__info"></div>
+    </div>
+  </div>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>

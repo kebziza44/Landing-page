@@ -1,0 +1,12 @@
+# ADMIRE L.C. — Netlify redirects
+# (drag-and-drop deploy'lar uchun; git/CLI deploy'da netlify.toml g'alaba qiladi)
+#
+# !! https://admire-lc-backend.onrender.com o'rniga Render'dagi
+#    backend URL'ingizni yozing (netlify.toml bilan bir xil bo'lsin) !!
+
+/admin                    https://admire-lc-backend.onrender.com/admin      200!
+/admin/*                  https://admire-lc-backend.onrender.com/admin/:splat  200!
+/api/*                    https://admire-lc-backend.onrender.com/api/:splat    200!
+/media/*                  https://admire-lc-backend.onrender.com/media/:splat  200!
+
+/*                        /index.html   200

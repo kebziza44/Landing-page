@@ -1,0 +1,52 @@
+# ============================================================
+# ADMIRE L.C. — Netlify konfiguratsiyasi
+#
+# Arxitektura: landing — statik; /admin, /api, /media — backendga proksi.
+# Backend: Node.js (Express + SQLite + Telegram bot) — Render.com'da
+# (qarang render.yaml, DEPLOY.md).
+#
+# !! BIR QATORLI SOZLASH !!
+# Quyidagi qoidalarda https://admire-lc-backend.onrender.com — Render'dagi
+# backend xizmatining URL'i. Agar Render'da boshqa nom bilan yaratgan
+# bo'lsangiz, 4 ta `to = ...` satrini o'sha URL'ga to'g'rilang.
+#
+# MUHIM: Netlify redirect'larda {{ env:VAR }} interpolatsiyasi ISHLAMAYDI
+# (netlify/cli#1599) — shuning uchun URL'lar hammasi ochiq (literal) yozilgan.
+# ============================================================
+
+[build]
+  publish = "."
+
+# ---- Proxy: admin panel va API → backend (force=true: statik fayl bo'lsa ham backendga) ----
+
+[[redirects]]
+  from = "/admin"
+  to = "https://admire-lc-backend.onrender.com/admin"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/admin/*"
+  to = "https://admire-lc-backend.onrender.com/admin/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://admire-lc-backend.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/media/*"
+  to = "https://admire-lc-backend.onrender.com/media/:splat"
+  status = 200
+  force = true
+
+# ---- Landing: boshqa barcha URL'lar statik index.html ----
+# (yuqoridagi force=true qoidalar avval qo'llanadi)
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
