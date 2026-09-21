@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { config } from "./config.js";
 import { run, all, get } from "./db.js";
 
 /* ============================================================
