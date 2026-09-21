@@ -99,5 +99,10 @@ export function createServer(bot) {
     res.json({ botUsername: config.botUsername || null, reception: "https://t.me/Admire_Qabulxona" });
   });
 
+  /* ---------- Health check (Render va monitoring uchun) ---------- */
+  app.get("/health", (req, res) => {
+    res.json({ status: "ok" });
+  });
+
   return app;
 }

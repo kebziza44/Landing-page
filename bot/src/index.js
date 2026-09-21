@@ -13,18 +13,22 @@ if (config.isBotConfigured) {
     // Production: webhook rejimi
     const app = createServer(bot);
     app.use(bot.webhookCallback(`/${config.webhookSecret}`));
-    app.listen(config.port, async () => {
-      console.log(`[server] http://localhost:${config.port}`);
+    app.listen(config.port, "0.0.0.0", async () => {
+      console.log(`[server] 0.0.0.0:${config.port} da ishlayapti`);
       await bot.api.setWebhook(`${config.baseUrl}/${config.webhookSecret}`, {
         drop_pending_updates: true,
       });
       console.log(`[bot] Webhook o‘rnatildi: ${config.baseUrl}/${config.webhookSecret}`);
     });
   } else {
-    // Development: long-polling
+    // Development: long-polling. Server ishlashini polling xatolari buzmasin:
+    bot.start({ drop_pending_updates: true }).catch((e) =>
+      console.error("[bot] Long-polling to'xtadi (web qismi ishlashda davom etadi):", e.message)
+    );
     const app = createServer(bot);
-    app.listen(config.port, () => console.log(`[server] http://localhost:${config.port}`));
-    bot.start({ drop_pending_updates: true });
+    app.listen(config.port, "0.0.0.0", () =>
+      console.log(`[server] 0.0.0.0:${config.port} da ishlayapti`)
+    );
     console.log("[bot] Long-polling rejimida ishga tushdi");
   }
 } else {
@@ -39,5 +43,7 @@ if (config.isBotConfigured) {
     },
   };
   const app = createServer(noopBot);
-  app.listen(config.port, () => console.log(`[server] http://localhost:${config.port}`));
+  app.listen(config.port, "0.0.0.0", () =>
+    console.log(`[server] 0.0.0.0:${config.port} da ishlayapti`)
+  );
 }

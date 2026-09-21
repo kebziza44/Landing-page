@@ -31,11 +31,23 @@ let fileDbPath = FILE_DB_PATH;
 if (isPostgres) {
   const { Pool, Client } = await import("pg");
   const useSsl = !/sslmode=disable/i.test(config.databaseUrl);
-  const connOpts = { connectionString: config.databaseUrl, ssl: useSsl ? { rejectUnauthorized: false } : false };
+  // connectionTimeoutMillis: Postgres javob bermasa osilib qolmaslik uchun —
+  // aks holda HTTP server ishga tushmasdan Render "No open ports" beradi.
+  const connOpts = {
+    connectionString: config.databaseUrl,
+    ssl: useSsl ? { rejectUnauthorized: false } : false,
+    connectionTimeoutMillis: 10000,
+  };
   // Avval bitta Client bilan ulanishni tekshirish (toza xato xabari uchun)
   const probe = new Client(connOpts);
+  // DNS/osilib qolish holatlariga qarshi qattiq 10s limit
+  const withTimeout = (p, ms, label) =>
+    Promise.race([
+      p,
+      new Promise((_, rej) => setTimeout(() => rej(new Error(label + " (" + ms + "ms)")), ms)),
+    ]);
   try {
-    await probe.connect();
+    await withTimeout(probe.connect(), 10000, "Ulanish vaqti tugadi");
     await probe.query(
       `CREATE TABLE IF NOT EXISTS ${PG_KV_TABLE} (
         key TEXT PRIMARY KEY,
