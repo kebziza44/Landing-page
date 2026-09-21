@@ -16,13 +16,24 @@ export function createServer(bot, { webhookPath, webhookHandler } = {}) {
   app.disable("x-powered-by");
   app.set("trust proxy", 1); // Netlify/Render proksi ortida haqiqiy IP uchun
 
-  /* Telegram webhook: grammY raw body o'qiydi — json parser'dan OLDIN bo'lishi shart */
-  if (webhookPath && webhookHandler) {
-    app.post("/" + webhookPath, webhookHandler);
-  }
-
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+
+  /* Telegram webhook: grammY'ning express adapteri tayyor req.body'ni o'qiydi
+     (frameworks.js: getUpdate: () => req.body) — shuning uchun json parserdan
+     KEYIN bo'lishi shart. Noto'g'ri body'lar 400 qaytaradi, crash bo'lmaydi. */
+  if (webhookPath && webhookHandler) {
+    app.post("/" + webhookPath, (req, res) => {
+      const update = req.body;
+      if (!update || typeof update !== "object" || typeof update.update_id !== "number") {
+        return res.status(400).json({ ok: false, error: "Noto'g'ri update" });
+      }
+      Promise.resolve(webhookHandler(req, res)).catch((err) => {
+        console.error("[bot] Webhook handler xatosi:", err.message);
+        if (!res.headersSent) res.status(500).json({ ok: false });
+      });
+    });
+  }
 
   /* ---------- CMS admin ---------- */
   app.use("/admin", createCmsRouter());
