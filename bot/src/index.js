@@ -8,6 +8,49 @@ assertConfig();
 
 let bot = null;
 
+/**
+ * Webhook'ni timeout va retry bilan o'rnatish.
+ * Telegram API vaqtincha unreachable bo'lsa ham server ishlashda davom etadi —
+ * fonda qayta urinib ko'radi, process hech qachon crash bo'lmaydi.
+ */
+function installWebhook(bot) {
+  const url = `${config.baseUrl}/${config.webhookSecret}`;
+  const maxAttempts = 5;
+  let timer = null;
+  let attempt = 0;
+
+  const tryInstall = async () => {
+    attempt++;
+    try {
+      await Promise.race([
+        bot.api.setWebhook(url, {
+          drop_pending_updates: true,
+          secret_token: config.webhookSecret,
+        }),
+        new Promise((_, rej) => setTimeout(() => rej(new Error("timeout (20s)")), 20000)),
+      ]);
+      console.log(`[bot] Webhook o'rnatildi: ${url}`);
+      return true;
+    } catch (e) {
+      console.error(`[bot] setWebhook urinish ${attempt}/${maxAttempts} muvaffaqiyatsiz:`, e.message);
+      return false;
+    }
+  };
+
+  const loop = async () => {
+    if (await tryInstall()) return;
+    while (attempt < maxAttempts) {
+      await new Promise((r) => setTimeout(r, 10000)); // 10s kutib qayta urinish
+      if (await tryInstall()) return;
+    }
+    console.error("[bot] Webhook o'rnatilmadi — web qismi ishlashda davom etadi, 60 soniyadan keyin yana uriniladi.");
+    timer = setInterval(async () => {
+      if (await tryInstall()) clearInterval(timer);
+    }, 60000);
+  };
+  loop().catch((e) => console.error("[bot] Webhook install xatosi:", e.message));
+}
+
 if (config.isBotConfigured) {
   bot = createBot();
 
@@ -22,13 +65,10 @@ if (config.isBotConfigured) {
       webhookPath: config.webhookSecret,
       webhookHandler: handleUpdate,
     });
-    app.listen(config.port, "0.0.0.0", async () => {
+    app.listen(config.port, "0.0.0.0", () => {
       console.log(`[server] 0.0.0.0:${config.port} da ishlayapti`);
-      await bot.api.setWebhook(`${config.baseUrl}/${config.webhookSecret}`, {
-        drop_pending_updates: true,
-        secret_token: config.webhookSecret,
-      });
-      console.log(`[bot] Webhook o‘rnatildi: ${config.baseUrl}/${config.webhookSecret}`);
+      // await yo'q — Telegram javob bermasa ham server ishlashda davom etadi
+      installWebhook(bot);
     });
   } else {
     // Development: long-polling. Server ishlashini polling xatolari buzmasin:
