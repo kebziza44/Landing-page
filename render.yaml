@@ -1,28 +1,31 @@
-# ADMIRE L.C. backend — Render.com Blueprint
+# ADMIRE L.C. backend — Render.com Blueprint (FREE plan mos)
 # Deploy: Render dashboard → New → Blueprint → repo tanlang.
-# Yoki: https://dashboard.render.com/select-repo?type=blueprint
 #
-# Bu server: Express CMS (/admin) + API (/api) + Telegram bot (long-polling)
-# + SQLite baza (doimiy diskda saqlanadi).
+# Eslatma: Free plan'da persistent disk YO'Q — shuning uchun baza
+# tashqi PostgreSQL'da saqlanadi (DATABASE_URL, masalan Neon free:
+# https://neon.tech). Server va'da qilingan diskka yozmaydi.
+#
+# DIQQAT: CMS orqali yuklangan video/rasm fayllar /tmp'da bo'lmay,
+# konteyner ichida saqlanadi — restart/redeploy'da yo'qoladi
+# (bazadagi yozuvlar saqlanadi). Doimiy fayllar kerak bo'lsa
+# S3/Cloudflare R2 qo'shish kerak.
 
 services:
   - type: web
     name: admire-lc-backend
     runtime: node
-    plan: free            # haqiqiy ishlab chiqarish uchun "starter" tavsiya etiladi
+    plan: free
     rootDir: bot
     buildCommand: npm ci
     startCommand: npm start
     healthCheckPath: /api/config
-    disk:                 # SQLite fayli shu diskda — redeploy'da yo'qolmaydi
-      name: admire-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: NODE_VERSION
         value: "20"
+      # Tashqi PostgreSQL ulanish satri (Neon free tavsiya etiladi):
+      # postgresql://user:pass@host/db?sslmode=require
       - key: DATABASE_URL
-        value: /var/data/admire.db
+        sync: false
       # Quyidagilarni Render dashboardda qo'lda kiriting (secret!):
       #   TELEGRAM_BOT_TOKEN      — @BotFather tokeni
       #   TELEGRAM_BOT_USERNAME   — Admire_qabul_bot

@@ -1,15 +1,5 @@
-import path from "node:path";
-import fs from "node:fs";
 import crypto from "node:crypto";
-import { config, ROOT } from "./config.js";
-import { run, all, get, persist } from "./db.js";
-
-const dbPath =
-  config.databaseUrl && !config.databaseUrl.startsWith("sqlite:")
-    ? config.databaseUrl
-    : path.join(ROOT, "data", "admire.db");
-
-fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+import { run, all, get } from "./db.js";
 
 /* ============================================================
    Parollar (scrypt)

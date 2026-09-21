@@ -3,24 +3,107 @@ import path from "node:path";
 import fs from "node:fs";
 import { config, ROOT } from "./config.js";
 
-const dbPath =
-  config.databaseUrl && !config.databaseUrl.startsWith("sqlite:")
-    ? config.databaseUrl
-    : path.join(ROOT, "data", "admire.db");
+/*
+ * Ikki xil saqlash rejimi:
+ *  1) FILE (default, lokal dev): sql.js → bot/data/admire.db fayli.
+ *  2) POSTGRES (DATABASE_URL=postgres://...): sql.js xotirada ishlaydi,
+ *     lekin baza blob sifatida tashqi PostgreSQL'ga (masalan Neon free)
+ *     saqlanadi — Render Free'da persistent disk yo'q, shuning uchun
+ *     bunday arxitektura ma'lumotlarni restart/redeploy'da saqlab qoladi.
+ *     Barcha so'rovlar (run/all/get) o'zgarmagan — ilova kodi SQLite
+ *     interfeysida ishlaydi.
+ */
+const FILE_DB_PATH = path.join(ROOT, "data", "admire.db");
+const PG_KV_TABLE = "app_kv";
+const PG_KV_KEY = "admire_sqlite_blob";
 
-fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+const isPostgres =
+  config.databaseUrl && /^postgres(ql)?:\/\//i.test(config.databaseUrl.trim());
 
 const SQL = await initSqlJs({
   locateFile: (file) => path.join(ROOT, "node_modules", "sql.js", "dist", file),
 });
 
-const sqlite = fs.existsSync(dbPath)
-  ? new SQL.Database(fs.readFileSync(dbPath))
-  : new SQL.Database();
+let sqlite = new SQL.Database();
+let pool = null;
+let fileDbPath = FILE_DB_PATH;
 
-/** Barcha yozuv amallaridan keyin bazani diskka yozish */
+if (isPostgres) {
+  const { Pool, Client } = await import("pg");
+  const useSsl = !/sslmode=disable/i.test(config.databaseUrl);
+  const connOpts = { connectionString: config.databaseUrl, ssl: useSsl ? { rejectUnauthorized: false } : false };
+  // Avval bitta Client bilan ulanishni tekshirish (toza xato xabari uchun)
+  const probe = new Client(connOpts);
+  try {
+    await probe.connect();
+    await probe.query(
+      `CREATE TABLE IF NOT EXISTS ${PG_KV_TABLE} (
+        key TEXT PRIMARY KEY,
+        value BYTEA NOT NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      )`
+    );
+    const res = await probe.query(`SELECT value FROM ${PG_KV_TABLE} WHERE key = $1`, [PG_KV_KEY]);
+    if (res.rows.length) {
+      sqlite = new SQL.Database(res.rows[0].value);
+      console.log("[db] Baza PostgreSQL'dan yuklandi (" + res.rows[0].value.length + " bayt)");
+    } else {
+      console.log("[db] PostgreSQL bo'sh — yangi baza yaratiladi");
+    }
+  } catch (err) {
+    console.error("[db] DATABASE_URL ga ulanib bo'lmadi:", err.message);
+    await probe.end().catch(() => {});
+    throw err; // ma'lumot yo'qolishiga yo'l qo'ymaslik uchun fail-fast
+  }
+  await probe.end().catch(() => {});
+  pool = new Pool({ ...connOpts, max: 3 });
+  pool.on("error", (e) => console.error("[db] PostgreSQL pool xatosi:", e.message));
+} else {
+  if (config.databaseUrl && !config.databaseUrl.startsWith("sqlite:")) {
+    // maxsus fayl yo'li (lokal testlar uchun)
+    fileDbPath = config.databaseUrl;
+  } else {
+    fileDbPath = FILE_DB_PATH;
+  }
+  fs.mkdirSync(path.dirname(fileDbPath), { recursive: true });
+  if (fs.existsSync(fileDbPath)) sqlite = new SQL.Database(fs.readFileSync(fileDbPath));
+}
+
+let flushTimer = null;
+
+async function flushToPostgres() {
+  try {
+    await pool.query(
+      `INSERT INTO ${PG_KV_TABLE} (key, value) VALUES ($1, $2)
+       ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`,
+      [PG_KV_KEY, Buffer.from(sqlite.export())]
+    );
+  } catch (err) {
+    console.error("[db] PostgreSQL'ga saqlashda xato:", err.message);
+  }
+}
+
+function flushToFile() {
+  fs.writeFileSync(fileDbPath, Buffer.from(sqlite.export()));
+}
+
+/** Barcha yozuv amallaridan keyin bazani diskka (yoki Postgres'ga) yozish */
 export function persist() {
-  fs.writeFileSync(dbPath, Buffer.from(sqlite.export()));
+  if (isPostgres) {
+    clearTimeout(flushTimer);
+    flushTimer = setTimeout(flushToPostgres, 1500); // tez ketma-ket yozishlarni birlashtirish
+  } else {
+    flushToFile();
+  }
+}
+
+if (isPostgres) {
+  for (const sig of ["SIGTERM", "SIGINT"]) {
+    process.on(sig, () => {
+      clearTimeout(flushTimer);
+      flushToPostgres().finally(() => process.exit(0));
+    });
+  }
 }
 
 export function run(sql, params = []) {
@@ -197,6 +280,8 @@ for (const col of [
   }
 }
 persist();
+// Boshlang'ich schema/migratsiyalarni birinchi bo'lib saqlab qo'yish
+if (isPostgres) await flushToPostgres();
 
 export const STATUSES = {
   new: { emoji: "🟡", label: "Yangi" },
