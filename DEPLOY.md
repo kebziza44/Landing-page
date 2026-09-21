@@ -27,19 +27,31 @@ https://admire-lc.netlify.app          (Netlify — statik)
    │                                        ├─ Express CMS (/admin)
    │                                        ├─ API (/api/applications...)
    │                                        ├─ Telegram bot
-   │                                        └─ SQLite (doimiy disk /var/data)
+   │                                        └─ Baza: tashqi PostgreSQL (Neon)
 ```
 
 Hammasi **bitta domenda** qoladi: `admire-lc.netlify.app/admin` to'g'ridan-to'g'ri
 ochiladi va refresh'da ham ishlaydi (Netlify proxy redirect'lari orqali).
 
-## 1-qadam: Backendni Render.com'ga deploy qilish
+## 1-qadam: Bepul PostgreSQL baza yaratish (Neon)
+
+Render Free planida persistent disk YO'Q, shuning uchun baza tashqi
+PostgreSQL'da saqlanadi:
+
+1. https://neon.tech → bepul ro'yxatdan o'tish (doimiy free tier).
+2. Project yarating → **Connection string**'ni nusxalang
+   (`postgresql://user:pass@ep-xxx.../neondb?sslmode=require`).
+3. (Alternativ: Render Free PostgreSQL — lekin u 30 kundan keyin o'chadi,
+   shuning uchun Neon tavsiya etiladi.)
+
+## 1-b: Backendni Render.com'ga deploy qilish
 
 1. Kodni GitHub'ga push qiling (`.gitignore` `.env` va `bot/data/` ni
    exclude qiladi — **sekremlar repoga tushmaydi**).
 2. Render dashboard → **New → Blueprint** → reponi tanlang.
    `render.yaml` avtomatik o'qiladi.
 3. Render env var'larida sekremlarni kiriting (render.yaml'da `sync: false`):
+   - `DATABASE_URL` — Neon'dan olingan connection string (1-qadam)
    - `TELEGRAM_BOT_TOKEN` — @BotFather tokeni
    - `TELEGRAM_BOT_USERNAME` — `Admire_qabul_bot`
    - `TELEGRAM_ADMIN_CHAT_ID` — `7793284016`
@@ -47,12 +59,19 @@ ochiladi va refresh'da ham ishlaydi (Netlify proxy redirect'lari orqali).
    - `ADMIN_PASSWORD` — kuchli parol (birinchi `admin` foydalanuvchi uchun)
    - `BASE_URL` — `https://admire-lc-backend.onrender.com`
    - `WEBHOOK_SECRET` — ixtiyoriy uzun tasodifiy satr
+   > Ishga tushish logida `[db] Baza PostgreSQL'dan yuklandi...` yoki
+   > `[db] PostgreSQL bo'sh — yangi baza yaratiladi` ko'rinishi kerak.
 4. Deploy tugagach tekshiring: `https://admire-lc-backend.onrender.com/api/config`
    → JSON qaytarsa server ishlayapti.
 
 > Eslatma (Render free plan): 15 daqiqa harakatsizlikdan keyin server "uxlaydi"
 > va birinchi so'rov ~30-50 sekund cho'ziladi. Doimiy ishlashi uchun
 > **Starter** plan ($7/oy) oling yoki cron-monitordan ping qiling.
+>
+> Eslatma (fayllar): CMS orqali yuklangan video/rasm fayllari konteyner
+> diskida saqlanadi — Render Free'da restart/redeploy'da **yo'qoladi**
+> (bazadagi yozuvlar PostgreSQL'da saqlanadi). Doimiy media uchun
+> S3/Cloudflare R2 integratsiyasi kerak. YouTube videolariga ta'sir qilmaydi.
 
 ## 2-qadam: Netlify'ni sozlash
 
