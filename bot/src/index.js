@@ -1,6 +1,8 @@
 import { config, assertConfig } from "./config.js";
 import { createServer } from "./server.js";
 import { createBot, notifyNewApplication } from "./bot.js";
+// webhookCallback — grammY'ning alohida eksporti (Bot metodasi EMAS):
+import { webhookCallback } from "grammy";
 
 assertConfig();
 
@@ -10,13 +12,21 @@ if (config.isBotConfigured) {
   bot = createBot();
 
   if (config.baseUrl && config.webhookSecret) {
-    // Production: webhook rejimi
-    const app = createServer(bot);
-    app.use(bot.webhookCallback(`/${config.webhookSecret}`));
+    // Production: webhook rejimi.
+    // grammY Express adapteri raw body o'qiydi — shuning uchun handler
+    // createServer ichida express.json()'dan OLDIN mount qilinadi.
+    const handleUpdate = webhookCallback(bot, "express", {
+      secretToken: config.webhookSecret,
+    });
+    const app = createServer(bot, {
+      webhookPath: config.webhookSecret,
+      webhookHandler: handleUpdate,
+    });
     app.listen(config.port, "0.0.0.0", async () => {
       console.log(`[server] 0.0.0.0:${config.port} da ishlayapti`);
       await bot.api.setWebhook(`${config.baseUrl}/${config.webhookSecret}`, {
         drop_pending_updates: true,
+        secret_token: config.webhookSecret,
       });
       console.log(`[bot] Webhook o‘rnatildi: ${config.baseUrl}/${config.webhookSecret}`);
     });

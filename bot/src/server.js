@@ -9,12 +9,18 @@ import { createCmsRouter } from "./cms.js";
 const SITE_DIR = path.resolve(ROOT, "..");
 const UPLOAD_DIR = path.join(ROOT, "data", "uploads");
 
-export function createServer(bot) {
+export function createServer(bot, { webhookPath, webhookHandler } = {}) {
   seedCms();
 
   const app = express();
   app.disable("x-powered-by");
   app.set("trust proxy", 1); // Netlify/Render proksi ortida haqiqiy IP uchun
+
+  /* Telegram webhook: grammY raw body o'qiydi — json parser'dan OLDIN bo'lishi shart */
+  if (webhookPath && webhookHandler) {
+    app.post("/" + webhookPath, webhookHandler);
+  }
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
 
